@@ -134,23 +134,6 @@ In the S3 bucket's event notification settings, add a trigger for `s3:ObjectCrea
 
 ---
 
-## ⚠️ Known Limitations / Roadmap
-
-- **No retry/dead-letter handling shown** — if OpenAI or DynamoDB calls fail mid-processing, the Lambda throws a `RuntimeException`; make sure a DLQ or Lambda destination is configured on the trigger so failed resumes aren't silently dropped.
-- **`gpt-3.5-turbo` is a dated, lower-capability model** — worth noting as a candidate upgrade (e.g. to a current GPT-4-class or GPT-5-class model) for better structured-extraction accuracy, especially on messy resume formatting.
-- **No schema validation on the LLM's JSON response** — if the model omits a field or returns malformed JSON, `content.get("field").asText()` will throw rather than degrade gracefully; consider validating/defaulting before building `Candidate`/`Experience`.
-- **One `PutItem` call per experience entry** — fine for typical resumes (a handful of jobs), but a `BatchWriteItem` would be more efficient for very long work histories.
-- No automated tests beyond the default Spring Boot context load test.
-- Planned: DLQ/error handling for failed extractions, schema validation on LLM output, batch DynamoDB writes, model upgrade.
-
----
-
 ## 🔗 Related
 
 - [Resume-Parser](https://github.com/Rezon669/Resume-Parser) — the upload-facing REST API that pushes resumes into the S3 bucket this Lambda listens to.
-
----
-
-## 📄 License
-
-MIT
